@@ -56,8 +56,8 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
 	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
-	# Change FQDN for usernames
-	sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
+	# Change FQDN for usernames < ONLY if you don't setup default domain above
+	#sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
 	# Restart sssd
 	systemctl restart sssd
 	# Wrap-up
@@ -87,8 +87,8 @@ if [[ ! -z $YUM_CMD ]]; then
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
 	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
-	# Change FQDN for usernames
-	sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
+	# Change FQDN for usernames < ONLY if you don't setup default domain above
+	#sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
 	# Restart sssd
 	systemctl restart sssd
 	# Wrap-up
