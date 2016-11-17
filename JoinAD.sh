@@ -49,7 +49,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	# Change homedir format
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
-	sed -i '/sssd/ a default_domain_suffix=$DOMAIN' /etc/sssd/sssd.conf
+	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
 	# Change FQDN for usernames
 	sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
 	# Restart sssd
@@ -74,7 +74,7 @@ if [[ ! -z $YUM_CMD ]]; then
 	# Change homedir format
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
-	sed -i '/sssd/ a default_domain_suffix=$DOMAIN' /etc/sssd/sssd.conf
+	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
 	# Change FQDN for usernames
 	sed -i s:'use_fully_qualified_names = True':'use_fully_qualified_names = False':g /etc/sssd/sssd.conf
 	# Restart sssd
