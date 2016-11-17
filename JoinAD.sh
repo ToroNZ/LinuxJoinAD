@@ -40,6 +40,12 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	# Enable sssd service and start
 	systemctl enable sssd
 	systemctl start sssd
+	# Set NTP to avoid clock differences with Domain Controller
+	systemctl enable ntpd.service
+	systemctl stop ntpd.service
+	ip=$(ping -c 1 $DOMAIN | gawk -F'[()]' '/PING/{print $2}')
+	ntpdate $ip
+	systemctl start ntpd.service
 	echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | sudo tee -a /etc/pam.d/common-session
 	# Configure sudo
 	aptitude install libsss-sudo
@@ -68,6 +74,12 @@ if [[ ! -z $YUM_CMD ]]; then
 	# Enable sssd service and start
 	systemctl enable sssd
 	systemctl start sssd
+	# Set NTP to avoid clock differences with Domain Controller
+	systemctl enable ntpd.service
+	systemctl stop ntpd.service
+	ip=$(ping -c 1 $DOMAIN | gawk -F'[()]' '/PING/{print $2}')
+	ntpdate $ip
+	systemctl start ntpd.service
 	# Add Domain admins to sudoers
 	realm permit --groups domain\ admins
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
