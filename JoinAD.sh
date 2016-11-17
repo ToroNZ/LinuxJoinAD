@@ -53,7 +53,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	# Restart sssd
 	systemctl restart sssd
 	# Wrap-up
-	echo "The computer is joined to the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
+	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
 fi
 
 # Configure RHEL
@@ -76,7 +76,7 @@ if [[ ! -z $YUM_CMD ]]; then
 	# Restart sssd
 	systemctl restart sssd
 	# Wrap-up
-	echo "The computer is joined to the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
+	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
 fi
 	
 	
