@@ -133,7 +133,6 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	kinit $ADMIN
 	klist
 	net ads join -k
-	su - $ADMIN
 	# Create home dir at login
 	echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | sudo tee -a /etc/pam.d/common-session
 	# Configure sudo
@@ -143,6 +142,8 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
 	# Wrap-up
 	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
+	echo "Try it"
+	su - $ADMIN
 fi
 # Configure RHEL
 if [[ ! -z $YUM_CMD ]]; then
