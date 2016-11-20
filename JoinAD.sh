@@ -34,7 +34,7 @@ fi
 
 # Configure Debian
 if [[ ! -z $APT_GET_CMD ]]; then
-		echo "Please enter the domain you wish to join: "
+	echo "Please enter the domain you wish to join: "
 	read DOMAIN
  	echo "Please enter a domain admin login to use: "
 	read ADMIN
@@ -94,7 +94,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	kerberos method = secrets and keytab \\
 	realm = ${DOMAIN^^} \\
 	security = ads" /etc/samba/smb.conf
-	cat << EOS > /etc/sssd/sssd.conf
+	cat << EOL > /etc/sssd/sssd.conf
 	[sssd]
 	services = nss, pam
 	config_file_version = 2
@@ -113,7 +113,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	fallback_homedir = /home/%d/%u
 	access_provider = simple
 
-	# Uncomment if the client machine hostname doesn't match the computer object on the DC.
+	# Uncomment if the client machine hostname doesn't match the computer object on the DC
 	# ad_hostname = mymachine.myubuntu.example.com
 
 	# Uncomment if DNS SRV resolution is not working
@@ -124,7 +124,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 
 	# Enumeration is discouraged for performance reasons.
 	# enumerate = true
-	EOS
+	EOL
 	chown root:root /etc/sssd/sssd.conf
 	chmod 600 /etc/sssd/sssd.conf
 	systemctl restart ntp.service
