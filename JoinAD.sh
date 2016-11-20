@@ -22,10 +22,10 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 	mkdir -p /var/lib/samba/private
 	if ! $(sudo which realmd 2>/dev/null); then
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -y install krb5-user
-    aptitude install samba sssd
+	aptitude install samba sssd
 	fi
  	if ! $(sudo which ntpd 2>/dev/null); then
-    aptitude install ntp
+	aptitude install ntp
 	fi
 else
 	echo "error can't install package $PACKAGE"
