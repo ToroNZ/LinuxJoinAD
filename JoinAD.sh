@@ -12,8 +12,10 @@ APT_GET_CMD=$(which apt-get)
 
 # Install neccesary packages
 if [[ ! -z $YUM_CMD ]]; then
+	echo "Currest hostname is $H make sure you set a FQDN"
 	yum install -y ntp realmd samba samba-common oddjob oddjob-mkhomedir sssd ntpdate adcli
 elif [[ ! -z $APT_GET_CMD ]]; then
+	echo "Currest hostname is $H make sure you set a FQDN"
 	mkdir -p /var/lib/samba/private
 	if ! $(sudo which realmd 2>/dev/null); then
     aptitude install realmd adcli sssd
