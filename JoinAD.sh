@@ -9,6 +9,7 @@ fi
 # Check for flavor
 YUM_CMD=$(which yum)
 APT_GET_CMD=$(which apt-get)
+H=$(hostname)
 
 # Install neccesary packages
 if [[ ! -z $YUM_CMD ]]; then
