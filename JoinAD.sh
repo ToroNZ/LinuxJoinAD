@@ -52,7 +52,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	service ntp start
 	
 	truncate -s0 /etc/krb5.conf
-	cat <<EOF >> /etc/krb5.conf
+	cat <<EOF > /etc/krb5.conf
 	[libdefaults]
 	ticket_lifetime = 24000
 	default_realm = "${DOMAIN^^}"
@@ -87,14 +87,14 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	default = FILE:/var/log/krb5libs.log
 	kdc = FILE:/var/log/krb5kdc.log
 	admin_server = FILE:/var/log/kadmind.log
-	<<-EOF
+  <<-EOF
 	sed -i "/[global]/ a workgroup = ${DOMAINS^^} \\
 	client signing = yes \\
 	client use spnego = yes \\
 	kerberos method = secrets and keytab \\
 	realm = ${DOMAIN^^} \\
 	security = ads" /etc/samba/smb.conf
-	cat << EOF > /etc/sssd/sssd.conf
+	cat <<EOF > /etc/sssd/sssd.conf
 	[sssd]
 	services = nss, pam
 	config_file_version = 2
@@ -119,7 +119,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	# ad_domain = "${DOMAIN^^}"
 	# Enumeration is discouraged for performance reasons.
 	# enumerate = true
-	<<-EOF
+  <<-EOF
 	chown root:root /etc/sssd/sssd.conf
 	chmod 600 /etc/sssd/sssd.conf
 	systemctl restart ntp.service
