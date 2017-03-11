@@ -15,7 +15,7 @@ H=$(hostname)
 if [[ ! -z $YUM_CMD ]]; then
 	echo "Current hostname is $H make sure you set a FQDN [Press ENTER to continue]"
 	read KEY
-	yum install -y ntp realmd samba samba-common oddjob oddjob-mkhomedir sssd ntpdate adcli
+	yum install -y ntp realmd samba samba-common oddjob oddjob-mkhomedir sssd ntpdate adcli samba-common-tools
 elif [[ ! -z $APT_GET_CMD ]]; then
 	echo "Current hostname is $H make sure you set a FQDN [Press ENTER to continue]"
 	read KEY
@@ -100,7 +100,6 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	config_file_version = 2
 	domains="${DOMAIN^^}"
 	default_domain_suffix="${DOMAIN^^}"
-
 	[domain/"${DOMAIN^^}"]
 	id_provider = ad
 	access_provider = ad
@@ -112,16 +111,12 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	override_homedir = /home/%d/%u
 	fallback_homedir = /home/%d/%u
 	access_provider = simple
-
 	# Uncomment if the client machine hostname doesn't match the computer object on the DC
 	# ad_hostname = mymachine.myubuntu.example.com
-
 	# Uncomment if DNS SRV resolution is not working
 	# ad_server = dc.mydomain.example.com
-
 	# Uncomment if the AD domain is named differently than the Samba domain
 	# ad_domain = "${DOMAIN^^}"
-
 	# Enumeration is discouraged for performance reasons.
 	# enumerate = true
 	EOF
@@ -165,6 +160,7 @@ if [[ ! -z $YUM_CMD ]]; then
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
 	# Change homedir format
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
+  sed -i "[sssd]/a full_name_format = %1$s" /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
 	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
 	# Change FQDN for usernames < ONLY if you don't setup default domain above
