@@ -59,7 +59,7 @@ cat <<-EOF > /etc/krb5.conf
 	default_tgs_entypes = rc4-hmac des-cbc-md5
 	default_tkt__enctypes = rc4-hmac des-cbc-md5
 	permitted_enctypes = rc4-hmac des-cbc-md5
-	dns_lookup_realm = true
+	dns_lookup_realm = false
 	dns_lookup_kdc = true
 	dns_fallback = yes
 	 
@@ -69,7 +69,7 @@ cat <<-EOF > /etc/krb5.conf
 	  kdc = "${DCFQDN2,,}"
     admin_server = "${DCFQDN,,}"
     master_kdc = "${DCFQDN,,}"
-	  default_domain = "${DOMAIN,,}"
+	  default_domain = "${DOMAIN^^}"
 	}
 	 
 	[domain_realm]
@@ -99,6 +99,7 @@ cat <<-EOF > /etc/samba/smb.conf
 	kerberos method = secrets and keytab
 	realm = ${DOMAIN^^}
 	security = ads
+  server services = rpc, nbt, wrepl, ldap, cldap, kdc, drepl, winbind, ntp_signd, kcc, dnsupdate, dns, s3fs
 EOF
 cat <<-EOF > /etc/sssd/sssd.conf
 	[sssd]
@@ -143,7 +144,7 @@ EOF
 	# Configure sudo
 	apt-get install libsss-sudo
 	# Add Domain admins to sudoers
-	realm permit --groups domain\ admins
+	#realm permit --groups domain\ admins
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
 	# Wrap-up
 	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
