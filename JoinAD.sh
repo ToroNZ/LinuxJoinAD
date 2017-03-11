@@ -125,9 +125,9 @@ cat <<-EOF > /etc/sssd/sssd.conf
 EOF
 	chown root:root /etc/sssd/sssd.conf
 	chmod 600 /etc/sssd/sssd.conf
-	systemctl restart ntp.service
-	systemctl restart smbd.service nmbd.service 
-	systemctl start sssd.service
+	service ntp restart
+	service samba restart
+	service sssd start
 	kinit $ADMIN
 	klist
 	net ads join -k
@@ -135,9 +135,9 @@ EOF
 	# Create home dir at login
 	echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | sudo tee -a /etc/pam.d/common-session
 	# Configure sudo
-	aptitude install libsss-sudo
+	apt-get install libsss-sudo
 	# Add Domain admins to sudoers
-	#realm permit --groups domain\ admins
+	realm permit --groups domain\ admins
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
 	# Wrap-up
 	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
