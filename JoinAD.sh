@@ -45,7 +45,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	if [ -z "$DCFQDN2" ]; then
 		echo "Proceeding using only 1 DC"
 	fi
-	DOMAINS=(echo $DOMAIN| cut -d'.' -f 1)
+	DOMAINS=$(echo $DOMAIN | cut -d. -f 1)
 	service ntp stop
 	ip=$(ping -c 1 $DOMAIN | gawk -F'[()]' '/PING/{print $2}')
 	sed -i "/join.html/ a server $ip" /etc/ntp.conf
