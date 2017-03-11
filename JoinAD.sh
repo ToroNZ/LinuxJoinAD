@@ -161,6 +161,8 @@ if [[ ! -z $YUM_CMD ]]; then
 	# Change homedir format
 	sed -i s:'fallback_homedir = /home/%u@%d':'fallback_homedir = /home/%d/%u':g /etc/sssd/sssd.conf
   sed -i '0,/[sssd]/a full_name_format = %1\$s' /etc/sssd/sssd.conf
+  sed -i '/id_provider/a chpass_provider = ad' /etc/sssd/sssd.conf
+  sed -i '/id_provider/a access_provider = ad' /etc/sssd/sssd.conf
 	# Set default domain to avoid using it on login prompt
 	sed -i "/sssd/ a default_domain_suffix=$DOMAIN" /etc/sssd/sssd.conf
 	# Change FQDN for usernames < ONLY if you don't setup default domain above
