@@ -67,18 +67,20 @@ cat <<-EOF > /etc/krb5.conf
 	"${DOMAIN^^}" = {
 	  kdc = "${DCFQDN,,}"
 	  kdc = "${DCFQDN2,,}"
-	  default_domain = "${DCFQDN,,}"
+    admin_server = "${DCFQDN,,}"
+    master_kdc = "${DCFQDN,,}"
+	  default_domain = "${DOMAIN,,}"
 	}
 	 
 	[domain_realm]
-	."${DOMAIN,,}"= "${DCFQDN^^}"
-	"${DOMAIN,,}" = "${DCFQDN^^}"
+	."${DOMAIN,,}"= "${DOMAIN^^}"
+	"${DOMAIN,,}" = "${DOMAIN^^}"
 	 
 	[appdefaults]
 	pam = {
 	   debug = false
 	   ticket_lifetime = 24h
-	   renew_lifetime = 7d
+	   renew_lifetime = 3d
 	   forwardable = true
 	   krb4_convert = false
 	}
@@ -88,12 +90,16 @@ cat <<-EOF > /etc/krb5.conf
 	kdc = FILE:/var/log/krb5kdc.log
 	admin_server = FILE:/var/log/kadmind.log
 EOF
-	sed -i "/[global]/ a workgroup = ${DOMAINS^^} \\
-	client signing = yes \\
-	client use spnego = yes \\
-	kerberos method = secrets and keytab \\
-	realm = ${DOMAIN^^} \\
-	security = ads" /etc/samba/smb.conf
+  truncate -s0 /etc/samba/smb.conf
+cat <<-EOF > /etc/samba/smb.conf
+	[global]
+  workgroup = ${DOMAINS^^}
+	client signing = yes
+	client use spnego = yes
+	kerberos method = secrets and keytab
+	realm = ${DOMAIN^^}
+	security = ads
+EOF
 cat <<-EOF > /etc/sssd/sssd.conf
 	[sssd]
   full_name_format = %1$s
@@ -128,9 +134,9 @@ EOF
 	service ntp restart
 	service samba restart
 	service sssd start
-	kinit $ADMIN
+	kinit $ADMIN@${DOMAIN^^}
 	klist
-	net ads join -k
+	net ads join -U $ADMIN
 	su - $ADMIN
 	# Create home dir at login
 	echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | sudo tee -a /etc/pam.d/common-session
