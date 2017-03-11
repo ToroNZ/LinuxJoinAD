@@ -119,7 +119,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	# ad_domain = "${DOMAIN^^}"
 	# Enumeration is discouraged for performance reasons.
 	# enumerate = true
-	EOF
+	<<-EOF
 	chown root:root /etc/sssd/sssd.conf
 	chmod 600 /etc/sssd/sssd.conf
 	systemctl restart ntp.service
