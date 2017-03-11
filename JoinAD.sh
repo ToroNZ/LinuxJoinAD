@@ -87,7 +87,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	default = FILE:/var/log/krb5libs.log
 	kdc = FILE:/var/log/krb5kdc.log
 	admin_server = FILE:/var/log/kadmind.log
-	EOF
+	<<-EOF
 	sed -i "/[global]/ a workgroup = ${DOMAINS^^} \\
 	client signing = yes \\
 	client use spnego = yes \\
