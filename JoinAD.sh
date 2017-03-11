@@ -47,7 +47,7 @@ if [[ ! -z $APT_GET_CMD ]]; then
 	fi
 	DOMAINS=$(echo $DOMAIN | cut -d. -f 1)
 	service ntp stop
-	ip=$(ping -c 1 $DOMAIN | gawk -F'[()]' '/PING/{print $2}')
+	ip=$(getent hosts $DCFQDN | awk '{ print $1 }')
 	sed -i "/join.html/ a server $ip" /etc/ntp.conf
 	service ntp start
 	
@@ -96,6 +96,7 @@ EOF
 	security = ads" /etc/samba/smb.conf
 cat <<-EOF > /etc/sssd/sssd.conf
 	[sssd]
+  full_name_format = %1$s
 	services = nss, pam
 	config_file_version = 2
 	domains="${DOMAIN^^}"
@@ -103,6 +104,8 @@ cat <<-EOF > /etc/sssd/sssd.conf
 	[domain/"${DOMAIN^^}"]
 	id_provider = ad
 	access_provider = ad
+  chpass_provider = ad
+  auth_provider = ad
 	cache_credentials = True
 	krb5_store_password_if_offline = True
 	default_shell = /bin/bash
