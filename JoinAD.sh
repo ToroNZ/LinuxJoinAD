@@ -67,8 +67,8 @@ cat <<-EOF > /etc/krb5.conf
 	"${DOMAIN^^}" = {
 	  kdc = "${DCFQDN,,}"
 	  kdc = "${DCFQDN2,,}"
-    admin_server = "${DCFQDN,,}"
-    master_kdc = "${DCFQDN,,}"
+    	admin_server = "${DCFQDN,,}"
+    	master_kdc = "${DCFQDN,,}"
 	  default_domain = "${DOMAIN^^}"
 	}
 	 
@@ -93,28 +93,28 @@ EOF
   truncate -s0 /etc/samba/smb.conf
 cat <<-EOF > /etc/samba/smb.conf
 	[global]
-  workgroup = ${DOMAINS^^}
+  	workgroup = ${DOMAINS^^}
 	client signing = yes
 	client use spnego = yes
 	kerberos method = secrets and keytab
 	realm = ${DOMAIN^^}
 	security = ads
-  server services = rpc, nbt, wrepl, ldap, cldap, kdc, drepl, winbind, ntp_signd, kcc, dnsupdate, dns, s3fs
+  	server services = rpc, nbt, wrepl, ldap, cldap, kdc, drepl, winbind, ntp_signd, kcc, dnsupdate, dns, s3fs
 EOF
 cat <<-EOF > /etc/sssd/sssd.conf
 	[sssd]
-  full_name_format = %1$s
+  	full_name_format = %1$s
 	services = nss, pam
 	config_file_version = 2
-  reconnection_retries = 3
+  	reconnection_retries = 3
 	domains=${DOMAIN^^}
 	default_domain_suffix=${DOMAIN^^}
   
 	[domain/${DOMAIN^^}]
 	id_provider = ad
 	access_provider = ad
-  chpass_provider = ad
-  auth_provider = ad
+  	chpass_provider = ad
+  	auth_provider = ad
 	cache_credentials = True
 	krb5_store_password_if_offline = True
 	default_shell = /bin/bash
@@ -123,6 +123,7 @@ cat <<-EOF > /etc/sssd/sssd.conf
 	override_homedir = /home/%d/%u
 	fallback_homedir = /home/%d/%u
 	access_provider = simple
+	
 	# Uncomment if the client machine hostname doesn't match the computer object on the DC
 	# ad_hostname = mymachine.myubuntu.example.com
 	# Uncomment if DNS SRV resolution is not working
