@@ -107,9 +107,10 @@ cat <<-EOF > /etc/sssd/sssd.conf
 	services = nss, pam
 	config_file_version = 2
   reconnection_retries = 3
-	domains="${DOMAIN^^}"
-	default_domain_suffix="${DOMAIN^^}"
-	[domain/"${DOMAIN^^}"]
+	domains=${DOMAIN^^}
+	default_domain_suffix=${DOMAIN^^}
+  
+	[domain/${DOMAIN^^}]
 	id_provider = ad
 	access_provider = ad
   chpass_provider = ad
