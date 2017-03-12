@@ -22,7 +22,7 @@ elif [[ ! -z $APT_GET_CMD ]]; then
 	mkdir -p /var/lib/samba/private
 	if ! $(sudo which realmd 2>/dev/null); then
 		sudo DEBIAN_FRONTEND=noninteractive apt-get -y install krb5-user
-    		aptitude install -y samba sssd
+    		aptitude install -y samba sssd samba-common-bin adcli
 	fi
  	if ! $(sudo which ntpd 2>/dev/null); then
     		aptitude install ntp
@@ -106,6 +106,7 @@ cat <<-EOF > /etc/sssd/sssd.conf
   full_name_format = %1$s
 	services = nss, pam
 	config_file_version = 2
+  reconnection_retries = 3
 	domains="${DOMAIN^^}"
 	default_domain_suffix="${DOMAIN^^}"
 	[domain/"${DOMAIN^^}"]
@@ -135,16 +136,24 @@ EOF
 	service ntp restart
 	service samba restart
 	service sssd start
-	kinit $ADMIN@${DOMAIN^^}
+  ## ADD REMOVAL OF '[NOTFOUND=return]' from /etc/nsswitch.conf to enable DNS lookup for host name resolution
+  sed -i 's/^hosts:.*/hosts:          files mdns4_minimal dns mdns4/' /etc/nsswitch.conf
+  kinit $ADMIN@${DOMAIN^^}
 	klist
 	net ads join -U $ADMIN
 	su - $ADMIN
 	# Create home dir at login
 	echo "session required pam_mkhomedir.so skel=/etc/skel/ umask=0022" | sudo tee -a /etc/pam.d/common-session
 	# Configure sudo
-	apt-get install libsss-sudo
+  DEBIANVER=$(cat /etc/debian_version)
+  if [[ ! -z $DEBIANVER ]]; then
+  echo "deb http://ftp.de.debian.org/debian wheezy-backports main" | sudo tee -a /etc/apt/sources.list
+  fi
+  apt-get update -y
+	apt-get install -y libsss-sudo
 	# Add Domain admins to sudoers
 	#realm permit --groups domain\ admins
+  truncate -s0 /etc/sudoers.d/domain_admins
 	echo "%domain\ admins@$DOMAIN ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/domain_admins
 	# Wrap-up
 	echo "The computer has joined the domain.  Suggest a reboot, ensure that you are connected to the network, and you should be able to login with domain credentials."
